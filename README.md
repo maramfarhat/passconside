@@ -17,12 +17,12 @@ For teammates who only need to **run** the app.
 
 ### Download
 
-1. Open **[GitHub Releases](https://github.com/maramfarhat/passconside/releases)** (latest **PASS-AI-win32-x64-…zip**).
-2. Download the `.zip` and the matching `.SHA256.txt` (optional integrity check).
-3. Extract to a folder **without spaces in the path**, e.g. `C:\Tools\PASS-AI`.
-4. Run **`PASS AI.exe`** from that folder.
+1. Open **[GitHub Releases](https://github.com/maramfarhat/passconside/releases)**.
+2. Under **Assets**, download **`PASS-AI-Setup-0.1.0.exe`** (Windows installer, ~170 MB).
+3. Run the installer and follow the wizard (optional desktop shortcut).
+4. Launch **PASS AI** from the Start menu or desktop.
 
-**Important:** Keep the **entire extracted folder**. The exe needs `resources/`, DLLs, and bundled extensions next to it. Do not copy only the exe elsewhere.
+Optional: use **`PASS-AI-Setup-….SHA256.txt`** to verify the installer hash.
 
 ### First run
 
@@ -31,9 +31,9 @@ For teammates who only need to **run** the app.
 - Agent settings and data: `%USERPROFILE%\.pass-ai\`
 - Configure LLM keys in the agent panel (OpenRouter, etc.). **Do not commit API keys to Git.**
 
-### What you get in the release zip
+### What the installer includes
 
-Portable PASS AI IDE with bundled **`pass-ai-agent`**, welcome/layout extensions, and PASS branding — same layout as `desktop/VSCode-win32-x64/` after a local build.
+Full PASS AI IDE with bundled **`pass-ai-agent`**, welcome/layout extensions, and PASS branding (same files as `desktop/VSCode-win32-x64/` after a local build).
 
 ---
 
@@ -113,11 +113,11 @@ Output: `desktop\VSCode-win32-x64\PASS AI.exe`
 
 ```powershell
 cd desktop
-.\scripts\package-pass-ai-release.ps1 -Version "1.0.0"
-# Artifact: desktop\out\releases\PASS-AI-win32-x64-1.0.0.zip
+.\scripts\package-pass-ai-release.ps1 -Version "0.1.0" -InstallInnoSetup
+# Artifact: desktop\out\releases\PASS-AI-Setup-0.1.0.exe
 ```
 
-Upload that zip to GitHub Releases for Phase 1 users.
+Upload **`PASS-AI-Setup-….exe`** (+ `.SHA256.txt`) to GitHub Releases for Phase 1 users.
 
 **Backend (optional today)**
 
