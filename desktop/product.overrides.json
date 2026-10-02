@@ -1,0 +1,14 @@
+{
+  "nameShort": "PASS AI",
+  "nameLong": "PASS AI IDE",
+  "applicationName": "pass-ai",
+  "dataFolderName": ".pass-ai",
+  "win32MutexName": "passai",
+  "win32DirName": "PASS AI",
+  "win32NameVersion": "PASS AI",
+  "win32RegValueName": "PASSAI",
+  "darwinBundleIdentifier": "com.passconsulting.passai",
+  "linuxIconName": "pass-ai",
+  "urlProtocol": "pass-ai",
+  "reportIssueUrl": "https://github.com/passconsulting/pass-ai/issues"
+}

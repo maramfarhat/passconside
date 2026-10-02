@@ -1,0 +1,17 @@
+{
+  "displayName": "PASS AI Agent",
+  "description": "Autonomous coding agent for PASS AI IDE.",
+  "publisher": "pass-consulting",
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "viewsContainers": {
+    "auxiliarybar": [
+      {
+        "id": "claude-dev-ActivityBar",
+        "title": "PASS AI",
+        "icon": "assets/icons/pass-ai-view.svg"
+      }
+    ]
+  }
+}

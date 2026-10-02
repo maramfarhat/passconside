@@ -1,0 +1,47 @@
+{
+  "name": "pass-ai-layout",
+  "displayName": "PASS AI Layout",
+  "description": "Secondary side bar defaults and agent panel toggle for PASS AI IDE",
+  "version": "0.1.0",
+  "publisher": "pass-consulting",
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "pass-ai.fixAgentLayout",
+        "title": "Fix PASS AI Agent Panel Layout",
+        "category": "PASS AI"
+      },
+      {
+        "command": "pass-ai.toggleAgentPanel",
+        "title": "Toggle PASS AI Agent Panel",
+        "icon": "$(sparkle)"
+      }
+    ],
+    "configurationDefaults": {
+      "workbench.secondarySideBar.defaultVisibility": "visible",
+      "workbench.activityBar.location": "top"
+    },
+    "menus": {
+      "layout/title": [
+        {
+          "command": "pass-ai.toggleAgentPanel",
+          "group": "navigation@99"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.93.0",
+    "typescript": "^5.6.0"
+  }
+}

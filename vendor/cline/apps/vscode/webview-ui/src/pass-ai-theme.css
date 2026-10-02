@@ -1,0 +1,557 @@
+/**
+
+ * PASS AI agent panel visual theme (colors & chrome only).
+
+ * Scoped under .pass-ai-theme on body.
+
+ */
+
+:root {
+
+	--pass-ai-bg: #050505;
+
+	--pass-ai-surface: #0c0c10;
+
+	--pass-ai-surface-2: #12121a;
+
+	--pass-ai-cyan: #00d2ff;
+
+	--pass-ai-purple: #a020f0;
+
+	--pass-ai-gradient: linear-gradient(135deg, var(--pass-ai-cyan) 0%, var(--pass-ai-purple) 100%);
+
+	--pass-ai-gradient-soft: linear-gradient(
+
+		135deg,
+
+		color-mix(in srgb, var(--pass-ai-cyan) 35%, transparent),
+
+		color-mix(in srgb, var(--pass-ai-purple) 35%, transparent)
+
+	);
+
+	--pass-ai-border: color-mix(in srgb, var(--pass-ai-cyan) 28%, transparent);
+
+}
+
+
+
+body.pass-ai-theme {
+
+	background-color: var(--pass-ai-bg) !important;
+
+	/* Map VS Code theme tokens used across Settings, History, MCP, and chat */
+
+	--vscode-sideBar-background: var(--pass-ai-bg);
+
+	--vscode-editor-background: var(--pass-ai-surface);
+
+	--vscode-input-background: var(--pass-ai-surface);
+
+	--vscode-input-foreground: #f3f4f6;
+
+	--vscode-input-border: var(--pass-ai-border);
+
+	--vscode-input-placeholderForeground: #8b8fa3;
+
+	--vscode-foreground: #f3f4f6;
+
+	--vscode-descriptionForeground: #a0a4b8;
+
+	--vscode-panel-border: var(--pass-ai-border);
+
+	--vscode-focusBorder: var(--pass-ai-cyan);
+
+	--vscode-button-background: #0078d4;
+
+	--vscode-button-foreground: #ffffff;
+
+	--vscode-button-hoverBackground: #0088ef;
+
+	--vscode-button-secondaryBackground: var(--pass-ai-surface-2);
+
+	--vscode-button-secondaryForeground: #e5e7eb;
+
+	--vscode-button-secondaryHoverBackground: color-mix(in srgb, var(--pass-ai-purple) 22%, var(--pass-ai-surface-2));
+
+	--vscode-badge-background: var(--pass-ai-surface-2);
+
+	--vscode-badge-foreground: #f3f4f6;
+
+	--vscode-toolbar-hoverBackground: color-mix(in srgb, var(--pass-ai-cyan) 12%, var(--pass-ai-surface));
+
+	--vscode-list-hoverBackground: color-mix(in srgb, var(--pass-ai-cyan) 10%, var(--pass-ai-surface));
+
+	--vscode-list-activeSelectionBackground: color-mix(in srgb, var(--pass-ai-purple) 25%, var(--pass-ai-surface));
+
+	--vscode-list-activeSelectionForeground: #ffffff;
+
+	--vscode-textLink-foreground: var(--pass-ai-cyan);
+
+	--vscode-textLink-activeForeground: var(--pass-ai-purple);
+
+	--vscode-checkbox-background: var(--pass-ai-surface);
+
+	--vscode-checkbox-border: var(--pass-ai-border);
+
+	--vscode-checkbox-foreground: var(--pass-ai-cyan);
+
+	--vscode-dropdown-background: var(--pass-ai-surface);
+
+	--vscode-dropdown-border: var(--pass-ai-border);
+
+	--vscode-dropdown-foreground: #f3f4f6;
+
+	--vscode-scrollbarSlider-background: color-mix(in srgb, var(--pass-ai-cyan) 25%, transparent);
+
+	--vscode-scrollbarSlider-hoverBackground: color-mix(in srgb, var(--pass-ai-purple) 35%, transparent);
+
+}
+
+
+
+body.pass-ai-theme #root {
+
+	background-color: var(--pass-ai-bg);
+
+	color: #f3f4f6;
+
+}
+
+
+
+.pass-ai-gradient-text {
+
+	background: var(--pass-ai-gradient);
+
+	-webkit-background-clip: text;
+
+	background-clip: text;
+
+	color: transparent;
+
+}
+
+
+
+.pass-ai-gradient-heading {
+
+	background: var(--pass-ai-gradient);
+
+	-webkit-background-clip: text;
+
+	background-clip: text;
+
+	color: transparent;
+
+	font-weight: 700;
+
+	font-size: calc(1.35 * var(--vscode-font-size, 14px));
+
+}
+
+
+
+.pass-ai-view-title {
+
+	font-size: calc(1.15 * var(--vscode-font-size, 14px));
+
+	font-weight: 600;
+
+}
+
+
+
+.pass-ai-theme .pass-ai-primary-button {
+
+	background: var(--pass-ai-gradient) !important;
+
+	color: #fff !important;
+
+	border: none !important;
+
+	border-radius: 10px !important;
+
+	box-shadow: 0 0 12px color-mix(in srgb, var(--pass-ai-purple) 35%, transparent);
+
+}
+
+
+
+.pass-ai-theme .pass-ai-primary-button:hover {
+
+	filter: brightness(1.07);
+
+}
+
+
+
+/* Full-page overlays: Settings, History, MCP, Customize, Account */
+
+.pass-ai-theme .pass-ai-page.pass-ai-overlay {
+
+	background: var(--pass-ai-bg);
+
+	color: #f3f4f6;
+
+}
+
+
+
+.pass-ai-theme .pass-ai-view-header {
+
+	border-bottom: 1px solid var(--pass-ai-border);
+
+}
+
+
+
+.pass-ai-theme .pass-ai-top-bar {
+
+	border-bottom: 1px solid color-mix(in srgb, var(--pass-ai-cyan) 18%, transparent);
+
+}
+
+
+
+.pass-ai-theme #cline-navbar-container button svg {
+
+	stroke: var(--pass-ai-cyan);
+
+	transition: stroke 0.15s ease;
+
+}
+
+
+
+.pass-ai-theme #cline-navbar-container button:hover svg {
+
+	stroke: var(--pass-ai-purple);
+
+}
+
+
+
+/* Settings sidebar tabs */
+
+.pass-ai-theme .pass-ai-settings-tab {
+
+	border-left: 2px solid transparent !important;
+
+}
+
+
+
+.pass-ai-theme .pass-ai-settings-tab-active {
+
+	opacity: 1 !important;
+
+	border-left-color: var(--pass-ai-cyan) !important;
+
+	background: var(--pass-ai-surface) !important;
+
+}
+
+
+
+.pass-ai-theme .pass-ai-settings-tab-active svg {
+
+	stroke: var(--pass-ai-cyan);
+
+}
+
+
+
+.pass-ai-theme .pass-ai-overlay [role="tablist"].border-r {
+
+	border-color: var(--pass-ai-border) !important;
+
+}
+
+
+
+/* MCP sub-tabs */
+
+.pass-ai-theme .pass-ai-mcp-tabs {
+
+	border-bottom-color: var(--pass-ai-border) !important;
+
+}
+
+
+
+/* Auto-approve + composer */
+
+.pass-ai-theme .pass-ai-auto-approve-bar {
+
+	border: 1px solid transparent !important;
+
+	border-radius: 14px 14px 0 0 !important;
+
+	background:
+
+		linear-gradient(var(--pass-ai-surface), var(--pass-ai-surface)) padding-box,
+
+		var(--pass-ai-gradient) border-box !important;
+
+}
+
+
+
+.pass-ai-theme #pass-ai-chat-composer {
+
+	border: 1px solid transparent;
+
+	border-radius: 16px;
+
+	margin: 0 14px 10px;
+
+	background:
+
+		linear-gradient(var(--pass-ai-surface), var(--pass-ai-surface)) padding-box,
+
+		var(--pass-ai-gradient) border-box;
+
+}
+
+
+
+/* History */
+
+.pass-ai-theme .history-preview-item,
+
+.pass-ai-theme .history-item {
+
+	background: transparent;
+
+}
+
+
+
+.pass-ai-theme .history-preview-item {
+
+	background: var(--pass-ai-surface) !important;
+
+	border-radius: 12px !important;
+
+	border: 1px solid var(--pass-ai-border);
+
+	position: relative;
+
+}
+
+
+
+.pass-ai-theme .history-preview-item::before,
+
+.pass-ai-theme .history-item::before {
+
+	content: "";
+
+	position: absolute;
+
+	left: 0;
+
+	top: 6px;
+
+	bottom: 6px;
+
+	width: 3px;
+
+	border-radius: 3px;
+
+	background: var(--pass-ai-gradient);
+
+	pointer-events: none;
+
+}
+
+
+
+.pass-ai-theme .history-item {
+
+	position: relative;
+
+	padding-left: 6px;
+
+	border-bottom-color: var(--pass-ai-border) !important;
+
+}
+
+
+
+.pass-ai-theme .history-item:hover {
+
+	background: color-mix(in srgb, var(--pass-ai-purple) 12%, var(--pass-ai-surface)) !important;
+
+}
+
+
+
+.pass-ai-theme .history-preview-item:hover {
+
+	border-color: color-mix(in srgb, var(--pass-ai-purple) 45%, transparent);
+
+	background: color-mix(in srgb, var(--pass-ai-surface) 85%, var(--pass-ai-purple)) !important;
+
+}
+
+
+
+.pass-ai-theme .history-cost-chip {
+
+	background: var(--pass-ai-gradient) !important;
+
+	color: #fff !important;
+
+}
+
+
+
+.pass-ai-theme .pass-ai-history-group-header {
+
+	background: var(--pass-ai-surface-2) !important;
+
+	color: #c4c8d4 !important;
+
+	border-bottom: 1px solid var(--pass-ai-border) !important;
+
+}
+
+
+
+.pass-ai-theme .pass-ai-history-footer {
+
+	border-top-color: var(--pass-ai-border) !important;
+
+}
+
+
+
+/* Chat: user task bubble + agent completion */
+
+.pass-ai-theme .pass-ai-user-bubble {
+
+	background: var(--pass-ai-surface-2) !important;
+
+	border: 1px solid var(--pass-ai-border);
+
+	border-radius: 10px !important;
+
+}
+
+
+
+.pass-ai-theme .pass-ai-task-header-card {
+
+	background: var(--pass-ai-surface) !important;
+
+	border: 1px solid var(--pass-ai-border) !important;
+
+	border-radius: 10px !important;
+
+}
+
+
+
+.pass-ai-theme .pass-ai-completion-card {
+
+	border: 1px solid transparent !important;
+
+	background:
+
+		linear-gradient(color-mix(in srgb, var(--pass-ai-purple) 8%, var(--pass-ai-surface)),
+
+			color-mix(in srgb, var(--pass-ai-purple) 8%, var(--pass-ai-surface))) padding-box,
+
+		var(--pass-ai-gradient) border-box !important;
+
+	border-radius: 10px !important;
+
+}
+
+
+
+.pass-ai-theme .pass-ai-completion-card .pass-ai-completion-label {
+
+	color: var(--pass-ai-cyan) !important;
+
+}
+
+
+
+.pass-ai-theme footer.bg-\(\-\-vscode-sidebar-background\) {
+
+	background: var(--pass-ai-bg) !important;
+
+}
+
+
+
+.pass-ai-theme .text-link,
+
+.pass-ai-theme a {
+
+	color: var(--pass-ai-cyan);
+
+}
+
+
+
+.pass-ai-theme .text-link:hover,
+
+.pass-ai-theme a:hover {
+
+	color: var(--pass-ai-purple);
+
+}
+
+
+
+.pass-ai-theme vscode-text-field,
+
+.pass-ai-theme vscode-text-area,
+
+.pass-ai-theme vscode-dropdown {
+
+	--input-background: var(--pass-ai-surface);
+
+	--dropdown-background: var(--pass-ai-surface);
+
+}
+
+
+
+.pass-ai-theme vscode-button::part(control) {
+
+	border-radius: 8px;
+
+}
+
+
+
+.pass-ai-theme vscode-button[appearance="primary"]::part(control) {
+
+	background: var(--pass-ai-gradient);
+
+	border: none;
+
+}
+
+
+
+.pass-ai-theme .bg-button-background {
+
+	background: var(--pass-ai-gradient) !important;
+
+}
+
+
+
+.pass-ai-theme .hover\:bg-button-hover:hover {
+
+	filter: brightness(1.06);
+
+}
+
+

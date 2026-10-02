@@ -1,0 +1,40 @@
+{
+  "name": "pass-ai-welcome",
+  "displayName": "PASS AI Welcome",
+  "description": "Welcome experience and branding for PASS AI IDE",
+  "version": "0.1.0",
+  "publisher": "pass-consulting",
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "walkthroughs": [
+      {
+        "id": "passAi.getStarted",
+        "title": "Get started with PASS AI",
+        "description": "PASS Consulting Group intelligent IDE",
+        "steps": [
+          {
+            "id": "passAi.openFolder",
+            "title": "Open a folder",
+            "description": "Open your project to start coding with PASS AI.",
+            "media": {
+              "markdown": "media/welcome.md"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.93.0",
+    "typescript": "^5.6.0"
+  }
+}

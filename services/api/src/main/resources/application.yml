@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: pass-ai-api
+  datasource:
+    url: jdbc:postgresql://localhost:5432/passai
+    username: passai
+    password: passai_dev
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

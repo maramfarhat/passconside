@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- VS Code activity bar: single-color template (currentColor), not a photo PNG -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+	<circle cx="12" cy="12" r="9.25" stroke="currentColor" stroke-width="1.35" />
+	<path
+		fill="currentColor"
+		d="M6.85 15.35V8.65h2.35c1.45 0 2.38.78 2.38 1.98 0 .82-.38 1.38-1.02 1.68.82.22 1.35.88 1.35 1.82 0 1.32-.98 2.12-2.52 2.12H6.85zm1.28-5.28h.95c.68 0 1.05-.32 1.05-.88 0-.55-.37-.87-1.05-.87h-.95v1.75zm0 4.05h1.08c.78 0 1.22-.36 1.22-.98 0-.62-.44-.98-1.22-.98H8.13v1.96zM13.55 15.35l1.95-5.82h1.32l1.95 5.82h-1.28l-.4-1.22h-1.9l-.4 1.22h-1.24zm1.86-2.12h1.22l-.58-1.76-.64 1.76z"
+	/>
+</svg>

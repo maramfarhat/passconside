@@ -1,0 +1,18 @@
+---
+description: PASS AI project context and current build status (read CONTINUE-HERE.md for full handoff)
+alwaysApply: true
+---
+
+# PASS AI IDE (passconside)
+
+Open-source Cursor-like IDE for PASS Consulting Group. Root: `C:\Users\maram\passconside`.
+
+Stack: VS Code OSS desktop (`desktop/vscode`), Node frontend (`apps/web`), Spring Boot 17 API (`services/api`), PostgreSQL (`infra/`).
+
+**Current focus:** Complete Windows build via `desktop/scripts/build-windows.ps1 -Launch`. Before native modules: run `patch-native-spectre.ps1`. Needs ~40GB free disk; postinstall failed once with ENOSPC.
+
+**Branding:** PASS AI in `product.json`, data dir `.pass-ai`, icons in `assets/branding/` and `desktop/vscode/resources/`.
+
+**Do not** use paths with spaces. Full session notes: `docs/CONTINUE-HERE.md`.
+
+When the user asks to continue previous work, read `docs/CONTINUE-HERE.md` first and pick up from "Next steps".

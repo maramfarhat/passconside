@@ -1,0 +1,26 @@
+node_modules/
+dist/
+out/
+target/
+.env
+.env.*
+!.env.example
+desktop/vscode/
+desktop/VSCode-win32-x64/
+desktop/out/
+desktop/extensions/**/node_modules/
+desktop/extensions/**/out/
+# Cline agent source is tracked; install/build artifacts are not
+vendor/cline/**/node_modules/
+vendor/cline/node_modules/
+vendor/cline/**/dist/
+vendor/cline/**/dist-standalone/
+vendor/cline/**/.vscode-test/
+vendor/cline/**/*.vsix
+vendor/cline/**/coverage/
+vendor/cline/**/coverage-unit/
+.idea/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
