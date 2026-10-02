@@ -1,0 +1,33 @@
+{
+	"models": [
+		{
+			"id": "Qwen/Qwen3-Coder-Next-FP8",
+			"displayName": "PASS AI Agent — Coder Next FP8",
+			"description": "Max quality agent; slow on GPU. Use for hard tasks only.",
+			"tier": "agent-max",
+			"agentTools": true
+		},
+		{
+			"id": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+			"displayName": "PASS AI Agent — Coder 30B MoE",
+			"description": "Recommended default for Cline Act (tools + speed).",
+			"tier": "agent",
+			"agentTools": true
+		},
+		{
+			"id": "Qwen/Qwen3-VL-30B-A3B-Instruct-FP8",
+			"displayName": "PASS AI Vision — VL 30B FP8",
+			"description": "Optional vision model; experimental for PASS IDE.",
+			"tier": "vision",
+			"agentTools": true
+		},
+		{
+			"id": "Qwen/Qwen2.5-Coder-32B-Instruct",
+			"displayName": "Fast Coder 32B",
+			"description": "Dense 32B with PASS API tool rewrite.",
+			"tier": "fast",
+			"agentTools": true
+		}
+	]
+}
+

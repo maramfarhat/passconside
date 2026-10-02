@@ -19,6 +19,7 @@ import "./utils/path" // necessary to have access to String.prototype.toPosix
 import { homedir } from "node:os"
 import path from "node:path"
 import { ensurePassAiGlobalIdentityRule } from "@/pass-ai/ensure-global-identity-rule"
+import { ensurePassAiServerProvider } from "@/pass-ai/ensure-pass-ai-server-provider"
 import type { ExtensionContext } from "vscode"
 import { HostProvider } from "@/hosts/host-provider"
 import { vscodeHostBridgeClient } from "@/hosts/vscode/hostbridge/client/host-grpc-client"
@@ -96,6 +97,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	// IMPORTANT: Must be done after host provider is setup and migrations are complete
 	const webview = (await initialize(storageContext)) as VscodeWebviewProvider
 	await ensurePassAiGlobalIdentityRule()
+	await ensurePassAiServerProvider(context.extensionPath)
 
 	// 5. Register services and commands specific to VS Code
 	// Initialize hook discovery cache for performance optimization

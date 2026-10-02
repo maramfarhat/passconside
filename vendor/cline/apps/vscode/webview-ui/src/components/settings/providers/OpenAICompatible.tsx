@@ -17,6 +17,8 @@ import { DebouncedTextField } from "../common/DebouncedTextField"
 import { ModelInfoView } from "../common/ModelInfoView"
 import { DropdownContainer } from "../common/ModelSelector"
 import ReasoningEffortSelector from "../ReasoningEffortSelector"
+import { isPassAiInferenceBaseUrl, passAiModelHint, passAiModelLabel } from "@/pass-ai/pass-ai-model-labels"
+import { switchPassAiActiveModel } from "@/pass-ai/pass-ai-switch-active-model"
 import { useApiConfigurationHandlers } from "../utils/useApiConfigurationHandlers"
 import { useProviderApiKeyField } from "../utils/useProviderApiKeyField"
 
@@ -285,8 +287,11 @@ export const OpenAICompatibleProvider = ({
 			const hasOverrides = Object.keys(overrides).length > 0
 			selectedModelOverridesRef.current[currentMode] = { modelId, overrides }
 			commitOpenAiSelection(modelId, hasOverrides ? overrides : undefined)
+			if (isPassAiInferenceBaseUrl(config?.baseUrl)) {
+				void switchPassAiActiveModel(modelId, latestOpenAiApiKeyRef.current)
+			}
 		},
-		[commitOpenAiSelection, currentMode, handleModeFieldChange, isOpenAiProvider],
+		[commitOpenAiSelection, config?.baseUrl, currentMode, handleModeFieldChange, isOpenAiProvider],
 	)
 
 	const { savedApiKeyMask, handleApiKeyChange } = useProviderApiKeyField({
@@ -374,12 +379,17 @@ export const OpenAICompatibleProvider = ({
 							)}
 							{availableOpenAiModels.map((modelId) => (
 								<VSCodeOption className="break-words whitespace-normal max-w-full" key={modelId} value={modelId}>
-									{modelId}
+									{passAiModelLabel(modelId, config?.baseUrl)}
 								</VSCodeOption>
 							))}
 							<VSCodeOption value="__custom__">Use custom model ID…</VSCodeOption>
 						</VSCodeDropdown>
 					</DropdownContainer>
+					{selectedModelId && passAiModelHint(selectedModelId, config?.baseUrl) && (
+						<p style={{ margin: 0, fontSize: 12, color: getAsVar(VSC_DESCRIPTION_FOREGROUND) }}>
+							{passAiModelHint(selectedModelId, config?.baseUrl)}
+						</p>
+					)}
 
 					{(isCustomOpenAiModelEntryVisible ||
 						(selectedModelId && !availableOpenAiModels.includes(selectedModelId))) && (

@@ -1,0 +1,54 @@
+{
+	"models": [
+		{
+			"id": "Qwen/Qwen3-Coder-Next-FP8",
+			"displayName": "PASS AI Agent — Coder Next FP8",
+			"description": "Hardest agent tasks. Slow + heavy (~84GB VRAM). Prefer Coder 30B MoE for daily use.",
+			"modelPath": "Qwen/Qwen3-Coder-Next-FP8",
+			"contextLength": 32768,
+			"toolCallParser": "qwen3_coder",
+			"tier": "agent-max",
+			"agentTools": true,
+			"vramGbApprox": 84,
+			"clineRole": "max-quality-slow"
+		},
+		{
+			"id": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+			"displayName": "PASS AI Agent — Coder 30B MoE",
+			"description": "Recommended main Cline agent: native tools, much faster than Coder Next FP8.",
+			"modelPath": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+			"contextLength": 32768,
+			"toolCallParser": "qwen3_coder",
+			"tier": "agent",
+			"agentTools": true,
+			"vramGbApprox": 62,
+			"clineRole": "default-agent"
+		},
+		{
+			"id": "Qwen/Qwen3-VL-30B-A3B-Instruct-FP8",
+			"displayName": "PASS AI Vision — VL 30B FP8",
+			"description": "Optional: screenshots/diagrams + chat. Needs SGLang multimodal launch (see MODEL-RESEARCH). Cline is mostly text today.",
+			"modelPath": "Qwen/Qwen3-VL-30B-A3B-Instruct-FP8",
+			"contextLength": 16384,
+			"toolCallParser": "qwen",
+			"tier": "vision",
+			"agentTools": true,
+			"vramGbApprox": 45,
+			"clineRole": "vision-experimental",
+			"optionalDownload": true
+		},
+		{
+			"id": "Qwen/Qwen2.5-Coder-32B-Instruct",
+			"displayName": "Fast Coder 32B",
+			"description": "Dense 32B; tools via qwen25 + PASS API rewrite.",
+			"modelPath": "/workspace/models/Qwen2.5-Coder-32B-Instruct",
+			"contextLength": 32768,
+			"toolCallParser": "qwen25",
+			"tier": "fast",
+			"agentTools": true,
+			"vramGbApprox": 62,
+			"clineRole": "fast-dense"
+		}
+	]
+}
+

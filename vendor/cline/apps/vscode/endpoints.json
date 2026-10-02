@@ -1,5 +1,6 @@
 {
-  "appBaseUrl": "http://127.0.0.1:8080",
-  "apiBaseUrl": "http://127.0.0.1:8080",
-  "mcpBaseUrl": "http://127.0.0.1:8080"
+  "appBaseUrl": "http://127.0.0.1:18080",
+  "apiBaseUrl": "http://127.0.0.1:18080",
+  "mcpBaseUrl": "http://127.0.0.1:18080",
+  "inferenceOpenAiBaseUrl": "http://127.0.0.1:18080/v1"
 }

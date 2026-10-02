@@ -6,8 +6,9 @@ Desktop IDE for **PASS Consulting Group**, based on **Visual Studio Code (Code-O
 |-------|------------|
 | Desktop shell | VS Code OSS (Electron) |
 | AI agent | `vendor/cline` → `pass-ai-agent` extension |
-| API (planned) | Spring Boot 3, Java 17 |
-| Database (planned) | PostgreSQL |
+| Local API | Spring Boot 3, Java 17 (`services/api`) |
+| GPU inference | RunPod + SGLang (OpenAI-compatible) |
+| Database (optional) | PostgreSQL (`infra/docker-compose.yml`) |
 
 ---
 
@@ -18,22 +19,125 @@ For teammates who only need to **run** the app.
 ### Download
 
 1. Open **[GitHub Releases](https://github.com/maramfarhat/passconside/releases)**.
-2. Under **Assets**, download **`PASS-AI-Setup-0.1.0.exe`** (Windows installer, ~170 MB).
+2. Under **Assets**, download the latest **`PASS-AI-Setup-*.exe`** (Windows installer).
 3. Run the installer and follow the wizard (optional desktop shortcut).
 4. Launch **PASS AI** from the Start menu or desktop.
 
-Optional: use **`PASS-AI-Setup-….SHA256.txt`** to verify the installer hash.
+Optional: use the matching **`.SHA256.txt`** to verify the installer hash.
 
 ### First run
 
 - Windows 10/11 **64-bit**.
 - Windows SmartScreen may warn on unsigned builds — choose “More info” → “Run anyway” if your team trusts the release.
 - Agent settings and data: `%USERPROFILE%\.pass-ai\`
-- Configure LLM keys in the agent panel (OpenRouter, etc.). **Do not commit API keys to Git.**
+- For **GPU-backed models**, complete [Connect PASS AI to the GPU server](#connect-pass-ai-to-the-gpu-server) below (tunnel + API + agent settings).
 
-### What the installer includes
+---
 
-Full PASS AI IDE with bundled **`pass-ai-agent`**, welcome/layout extensions, and PASS branding (same files as `desktop/VSCode-win32-x64/` after a local build).
+## Connect PASS AI to the GPU server
+
+PASS AI can use **your team RunPod GPU** (SGLang) through a **local Spring Boot proxy**. The IDE talks to `http://127.0.0.1:18080/v1` — not directly to the public internet.
+
+### Architecture
+
+```
+PASS AI (desktop)  →  Spring Boot API (:18080)  →  SSH tunnel  →  RunPod SGLang (:30000)
+                              ↓
+                        Admin API (:30001)  →  switch / catalog on GPU
+```
+
+### 1. One-time: repo root `.env`
+
+```powershell
+cd C:\dev\passconside   # or your clone path
+copy .env.example .env
+```
+
+Edit `.env` (never commit this file):
+
+| Variable | Example | Purpose |
+|----------|---------|---------|
+| `PASS_AI_INFERENCE_BASE_URL` | `http://127.0.0.1:30000/v1` | SGLang on the pod (via tunnel) |
+| `PASS_AI_INFERENCE_ADMIN_URL` | `http://127.0.0.1:30001` | Model switch / catalog |
+| `PASS_AI_INFERENCE_API_KEY` | (from pod `api-key.env`) | Bearer token for SGLang |
+| `PASS_AI_API_KEY` | (optional, same or your own) | Protects local `/v1/*` |
+| `PASS_AI_DEFAULT_MODEL` | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | Default when switching models |
+| `SERVER_PORT` | `18080` | Local API port (avoid 8080 if Oracle TNS uses it) |
+
+Get the inference key from the pod: `/workspace/pass-ai/config/api-key.env` (ops only — do not commit).
+
+Sync key for the agent (writes `%USERPROFILE%\.pass-ai\inference-api-key`):
+
+```powershell
+cd desktop
+.\scripts\sync-pass-ai-inference-key.ps1
+```
+
+### 2. Start the SSH tunnel (every session)
+
+Forwards **30000** (inference) and **30001** (admin) from RunPod to your PC:
+
+```powershell
+cd infra\runpod
+.\tunnel.ps1
+```
+
+Leave this window open. Requires SSH key: `%USERPROFILE%\.ssh\pass_ai_runpod` (see `infra/runpod/README.md`).
+
+### 3. Start the Spring Boot backend (every session)
+
+**Java 17** and **Maven** required (e.g. `choco install maven`).
+
+```powershell
+cd C:\dev\passconside
+# Load .env into the shell (PowerShell example):
+Get-Content .env | ForEach-Object {
+  if ($_ -match '^\s*([^#=]+)=(.*)$') { Set-Item -Path "env:$($matches[1].Trim())" -Value $matches[2].Trim() }
+}
+$env:SERVER_PORT = "18080"   # if not already in .env
+
+cd services\api
+mvn spring-boot:run
+```
+
+Wait until you see `Tomcat started on port 18080`.
+
+**Quick checks:**
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:18080/api/v1/health
+Invoke-RestMethod http://127.0.0.1:18080/api/v1/inference/status
+```
+
+More detail: [`services/api/README.md`](services/api/README.md).
+
+### 4. Configure PASS AI (agent panel)
+
+1. Open **PASS AI** → agent **Settings** (gear).
+2. **API Provider:** **OpenAI Compatible**
+3. **Base URL:** `http://127.0.0.1:18080/v1`
+4. **API key:** same as `PASS_AI_API_KEY` if set, else the inference key from the pod / `inference-api-key` file.
+5. **Model ID:** pick from the list (refresh if empty), e.g.:
+   - **`PASS AI Agent — Coder 30B MoE`** — recommended daily Cline / Act mode
+   - **`PASS AI Agent — Coder Next FP8`** — hardest tasks (slower)
+   - **`Fast Coder 32B`** — dense 32B fallback
+
+Model catalog and GPU ops: [`desktop/agent/PASS-AI-MODELS.md`](desktop/agent/PASS-AI-MODELS.md), [`infra/runpod/README.md`](infra/runpod/README.md).
+
+Bundled endpoints (after install/build): `desktop/agent/endpoints.json` → `http://127.0.0.1:18080/v1`.
+
+### 5. RunPod server (maintainers)
+
+SSH and scripts live on the pod under `/workspace/pass-ai/`. From your PC:
+
+```powershell
+cd infra\runpod
+.\deploy-runpod-scripts.ps1
+# Optional: download models + switch to recommended agent
+.\setup-recommended-inference.ps1
+```
+
+Research (VRAM, which models fit): [`desktop/agent/PASS-AI-MODEL-RESEARCH.md`](desktop/agent/PASS-AI-MODEL-RESEARCH.md).
 
 ---
 
@@ -56,6 +160,7 @@ Install tools (minimum for **agent** changes):
 |------|---------|
 | **Bun** | [bun.sh](https://bun.sh) |
 | **Node.js 20** | [nodejs.org](https://nodejs.org) (for built-in extensions) |
+| **Java 17 + Maven** | For `services/api` (backend proxy) |
 
 First agent build (downloads `vendor/cline` dependencies; several GB in `node_modules`, not in Git):
 
@@ -71,6 +176,7 @@ Your API keys and agent data stay in **`%USERPROFILE%\.pass-ai\`** — the same 
 |--------------|-------------|-------------|
 | **Agent** (chat, MCP, tools, prompts) under `vendor/cline/apps/vscode` | `.\scripts\build-pass-ai-agent.ps1` | **A)** Install the generated `.vsix` from `desktop\vscode\extensions\pass-ai-agent\*.vsix` in your **installed** PASS AI (Extensions → **Install from VSIX**), **or** **B)** build a dev app folder (next row) |
 | **Built-in extensions** `desktop/extensions/pass-ai-*` | `.\scripts\install-builtin-extensions.ps1` then full desktop build | Full desktop build (below) |
+| **Backend / inference proxy** `services/api` | `mvn spring-boot:run` (see above) | Health + chat via `:18080` |
 | **PASS branding / product.json / workbench** | Full desktop build | Run `desktop\VSCode-win32-x64\PASS AI.exe` **or** create a new installer |
 
 **Full desktop rebuild** (first time needs VS Code source + ~40–60 GB disk; see Phase 2 prerequisites):
@@ -90,7 +196,8 @@ After your changes work locally:
 
 ```powershell
 cd C:\dev\passconside\desktop
-.\scripts\package-pass-ai-release.ps1 -Version "0.1.1"
+.\scripts\build-pass-ai-agent.ps1
+.\scripts\package-pass-ai-release.ps1 -Version "0.1.1" -InstallInnoSetup
 ```
 
 Upload `desktop\out\releases\PASS-AI-Setup-0.1.1.exe` to [GitHub Releases](https://github.com/maramfarhat/passconside/releases). Teammates run the new installer (they can install over the old version).
@@ -124,6 +231,7 @@ For teammates who **modify** the project (agent, branding, desktop shell, API).
 | **Yarn 1.22.x** | VS Code source build |
 | **Python 3.11+** | VS Code build (Windows) |
 | **Visual Studio 2022** + Desktop C++ | Native modules in VS Code build |
+| **Java 17 + Maven** | Spring Boot API |
 | **~40–60 GB free disk** | Full desktop compile |
 
 Clone (use a path **without spaces**):
@@ -137,9 +245,10 @@ cd C:\dev\passconside
 
 | In Git | Not in Git (you create locally) |
 |--------|----------------------------------|
-| Source: `vendor/cline` (trimmed), `desktop/scripts`, `desktop/extensions`, `services/api`, … | `vendor/cline/**/node_modules`, `**/dist` |
+| Source: `vendor/cline` (trimmed), `desktop/scripts`, `desktop/extensions`, `services/api`, `infra/runpod`, … | `vendor/cline/**/node_modules`, `**/dist` |
 | Docs, branding assets | `desktop/vscode/` (VS Code upstream clone) |
 | | `desktop/VSCode-win32-x64/` (portable app — use **Releases** or build) |
+| `.env.example` | `.env` (secrets) |
 
 After clone, **always** install agent dependencies once:
 
@@ -148,58 +257,14 @@ cd desktop
 .\scripts\build-pass-ai-agent.ps1
 ```
 
-That runs `bun install` in `vendor/cline` and installs the agent into `desktop/vscode/extensions/pass-ai-agent` (when the VS Code tree exists) and syncs into `desktop/VSCode-win32-x64` if that folder exists.
-
-### Apply your changes
-
-**Agent / MCP / PASS branding (most common)**
-
-```powershell
-cd C:\dev\passconside\desktop
-# edit files under vendor\cline\apps\vscode or run patches:
-.\scripts\patch-cline-for-pass-ai.ps1
-.\scripts\apply-pass-agent-branding.ps1
-.\scripts\build-pass-ai-agent.ps1
-```
-
-If you already have a portable build folder, the build script syncs the agent into it. Otherwise run a full desktop build (below).
-
-**Built-in PASS extensions** (`pass-ai-welcome`, `pass-ai-layout`)
-
-```powershell
-cd desktop
-.\scripts\install-builtin-extensions.ps1
-```
-
-**Full desktop IDE rebuild** (required for core VS Code / product.json / workbench changes)
-
-```powershell
-cd desktop
-.\scripts\setup-vscode.ps1          # first time only
-.\scripts\build-pass-ai-agent.ps1   # before or after; keeps agent bundled
-.\scripts\build-windows.ps1 -Launch
-```
-
-Output: `desktop\VSCode-win32-x64\PASS AI.exe`
-
-**Create a new release zip locally** (maintainers)
-
-```powershell
-cd desktop
-.\scripts\package-pass-ai-release.ps1 -Version "0.1.0" -InstallInnoSetup
-# Artifact: desktop\out\releases\PASS-AI-Setup-0.1.0.exe
-```
-
-Upload **`PASS-AI-Setup-….exe`** (+ `.SHA256.txt`) to GitHub Releases for Phase 1 users.
-
-**Backend (optional today)**
+### Optional: PostgreSQL
 
 ```powershell
 cd infra
 docker compose up -d
-cd ..\services\api
-.\mvnw spring-boot:run
 ```
+
+The API can run without Postgres for inference-only workflows.
 
 ### Re-import full upstream Cline (rare)
 
@@ -223,8 +288,9 @@ passconside/
 │   └── scripts/
 ├── vendor/cline/          # Trimmed Cline engine (source in Git)
 ├── apps/web/              # Future web UI
-├── services/api/          # Spring Boot API
-├── infra/                 # Docker Compose (PostgreSQL)
+├── services/api/          # Spring Boot API (inference proxy)
+├── infra/runpod/          # Tunnel, GPU catalog, deploy scripts
+├── infra/docker-compose.yml
 └── docs/                  # Architecture and handoff notes
 ```
 
