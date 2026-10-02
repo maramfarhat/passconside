@@ -17,7 +17,7 @@
 			"displayName": "PASS AI Agent — Coder 30B MoE",
 			"description": "Recommended main Cline agent: native tools, much faster than Coder Next FP8.",
 			"modelPath": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
-			"contextLength": 32768,
+			"contextLength": 65536,
 			"toolCallParser": "qwen3_coder",
 			"tier": "agent",
 			"agentTools": true,

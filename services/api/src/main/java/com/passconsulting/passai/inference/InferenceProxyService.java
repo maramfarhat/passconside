@@ -27,16 +27,24 @@ public class InferenceProxyService {
 	private final PassAiProperties properties;
 	private final ModelCatalogService catalogService;
 	private final ObjectMapper objectMapper;
+	private final ChatContextPreparer contextPreparer;
 
 	public InferenceProxyService(
 			WebClient inferenceWebClient,
 			PassAiProperties properties,
 			ModelCatalogService catalogService,
-			ObjectMapper objectMapper) {
+			ObjectMapper objectMapper,
+			ChatContextPreparer contextPreparer) {
 		this.inferenceWebClient = inferenceWebClient;
 		this.properties = properties;
 		this.catalogService = catalogService;
 		this.objectMapper = objectMapper;
+		this.contextPreparer = contextPreparer;
+	}
+
+	/** Validates / trims before opening an SSE stream (fail fast with JSON, not 500). */
+	public void prepareChatRequest(String requestBody) throws ChatContextPreparer.ContextLimitExceededException {
+		contextPreparer.prepare(requestBody);
 	}
 
 	public ResponseEntity<String> listModels() {
@@ -55,7 +63,9 @@ public class InferenceProxyService {
 		}
 	}
 
-	public ResponseEntity<String> chatCompletions(String requestBody) {
+	public ResponseEntity<String> chatCompletions(String requestBody) throws ChatContextPreparer.ContextLimitExceededException {
+		ChatContextPreparer.PrepareResult prepared = contextPreparer.prepare(requestBody);
+		requestBody = prepared.requestBody();
 		prepareModel(requestBody);
 		try {
 			String body = inferenceWebClient.post()
@@ -77,7 +87,10 @@ public class InferenceProxyService {
 		}
 	}
 
-	public void writeChatCompletionsStream(String requestBody, OutputStream outputStream) throws IOException {
+	public void writeChatCompletionsStream(String requestBody, OutputStream outputStream)
+			throws IOException, ChatContextPreparer.ContextLimitExceededException {
+		ChatContextPreparer.PrepareResult prepared = contextPreparer.prepare(requestBody);
+		requestBody = prepared.requestBody();
 		prepareModel(requestBody);
 		try {
 			var flux = inferenceWebClient.post()
@@ -109,8 +122,19 @@ public class InferenceProxyService {
 			}
 		}
 		catch (WebClientResponseException ex) {
-			throw new IOException(ex.getResponseBodyAsString(), ex);
+			throw new IOException(friendlyUpstreamMessage(ex), ex);
 		}
+	}
+
+	private static String friendlyUpstreamMessage(WebClientResponseException ex) {
+		String body = ex.getResponseBodyAsString();
+		if (body != null && !body.isBlank()) {
+			return body;
+		}
+		if (ex.getStatusCode().value() == 400) {
+			return "GPU rejected the request (context likely full). Start a new task or let PASS AI trim history on the next turn.";
+		}
+		return ex.getMessage() != null ? ex.getMessage() : "Upstream inference failed";
 	}
 
 	public InferenceStatus status() {

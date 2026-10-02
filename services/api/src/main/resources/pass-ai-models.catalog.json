@@ -5,6 +5,7 @@
 			"displayName": "PASS AI Agent — Coder Next FP8",
 			"description": "Max quality agent; slow on GPU. Use for hard tasks only.",
 			"tier": "agent-max",
+			"contextLength": 32768,
 			"agentTools": true
 		},
 		{
@@ -12,6 +13,7 @@
 			"displayName": "PASS AI Agent — Coder 30B MoE",
 			"description": "Recommended default for Cline Act (tools + speed).",
 			"tier": "agent",
+			"contextLength": 65536,
 			"agentTools": true
 		},
 		{
@@ -19,6 +21,7 @@
 			"displayName": "PASS AI Vision — VL 30B FP8",
 			"description": "Optional vision model; experimental for PASS IDE.",
 			"tier": "vision",
+			"contextLength": 16384,
 			"agentTools": true
 		},
 		{
@@ -26,8 +29,8 @@
 			"displayName": "Fast Coder 32B",
 			"description": "Dense 32B with PASS API tool rewrite.",
 			"tier": "fast",
+			"contextLength": 32768,
 			"agentTools": true
 		}
 	]
 }
-

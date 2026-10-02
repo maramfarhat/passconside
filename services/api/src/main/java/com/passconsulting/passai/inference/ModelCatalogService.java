@@ -51,11 +51,12 @@ public class ModelCatalogService {
 		for (CatalogModel model : models) {
 			boolean isActive = model.id().equals(active);
 			data.append("""
-					{"id":"%s","object":"model","owned_by":"pass-ai","pass_ai":{"displayName":"%s","tier":"%s","active":%s}}
+					{"id":"%s","object":"model","owned_by":"pass-ai","pass_ai":{"displayName":"%s","tier":"%s","contextLength":%d,"active":%s}}
 					,""".formatted(
 					escapeJson(model.id()),
 					escapeJson(model.displayName()),
 					escapeJson(model.tier()),
+					model.contextLength(),
 					isActive));
 		}
 		if (data.length() > 0) {
@@ -180,11 +181,7 @@ public class ModelCatalogService {
 			}
 			List<CatalogModel> list = new java.util.ArrayList<>();
 			for (JsonNode node : models) {
-				list.add(new CatalogModel(
-						node.path("id").asText(),
-						node.path("displayName").asText(node.path("id").asText()),
-						node.path("description").asText(""),
-						node.path("tier").asText("")));
+				list.add(catalogModelFromJson(node));
 			}
 			return Optional.of(list);
 		}
@@ -199,11 +196,7 @@ public class ModelCatalogService {
 			JsonNode models = root.path("models");
 			List<CatalogModel> list = new java.util.ArrayList<>();
 			for (JsonNode node : models) {
-				list.add(new CatalogModel(
-						node.path("id").asText(),
-						node.path("displayName").asText(node.path("id").asText()),
-						node.path("description").asText(""),
-						node.path("tier").asText("")));
+				list.add(catalogModelFromJson(node));
 			}
 			return list;
 		}
@@ -212,7 +205,16 @@ public class ModelCatalogService {
 		}
 	}
 
-	public record CatalogModel(String id, String displayName, String description, String tier) {
+	public record CatalogModel(String id, String displayName, String description, String tier, int contextLength) {
+	}
+
+	private CatalogModel catalogModelFromJson(JsonNode node) {
+		return new CatalogModel(
+				node.path("id").asText(),
+				node.path("displayName").asText(node.path("id").asText()),
+				node.path("description").asText(""),
+				node.path("tier").asText(""),
+				node.path("contextLength").asInt(32768));
 	}
 
 	private static String escapeJson(String value) {
