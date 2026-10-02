@@ -37,6 +37,79 @@ Full PASS AI IDE with bundled **`pass-ai-agent`**, welcome/layout extensions, an
 
 ---
 
+## Phase 1 + clone — installed the `.exe` and want to change the code
+
+You can **keep using the installed app** for daily work and **use the cloned repo** to develop. They are separate copies on disk: editing files in Git does **not** change the app in `Program Files` until you **rebuild and reinstall** (or test via a dev build below).
+
+### One-time setup after clone
+
+Use a folder **without spaces**, e.g. `C:\dev\passconside`:
+
+```powershell
+git clone https://github.com/maramfarhat/passconside.git C:\dev\passconside
+cd C:\dev\passconside\desktop
+```
+
+Install tools (minimum for **agent** changes):
+
+| Tool | Install |
+|------|---------|
+| **Bun** | [bun.sh](https://bun.sh) |
+| **Node.js 20** | [nodejs.org](https://nodejs.org) (for built-in extensions) |
+
+First agent build (downloads `vendor/cline` dependencies; several GB in `node_modules`, not in Git):
+
+```powershell
+.\scripts\build-pass-ai-agent.ps1
+```
+
+Your API keys and agent data stay in **`%USERPROFILE%\.pass-ai\`** — the same folder the installed PASS AI uses, so settings usually carry over when you test a new build.
+
+### What to do for each kind of change
+
+| You changed… | What to run | How to test |
+|--------------|-------------|-------------|
+| **Agent** (chat, MCP, tools, prompts) under `vendor/cline/apps/vscode` | `.\scripts\build-pass-ai-agent.ps1` | **A)** Install the generated `.vsix` from `desktop\vscode\extensions\pass-ai-agent\*.vsix` in your **installed** PASS AI (Extensions → **Install from VSIX**), **or** **B)** build a dev app folder (next row) |
+| **Built-in extensions** `desktop/extensions/pass-ai-*` | `.\scripts\install-builtin-extensions.ps1` then full desktop build | Full desktop build (below) |
+| **PASS branding / product.json / workbench** | Full desktop build | Run `desktop\VSCode-win32-x64\PASS AI.exe` **or** create a new installer |
+
+**Full desktop rebuild** (first time needs VS Code source + ~40–60 GB disk; see Phase 2 prerequisites):
+
+```powershell
+cd C:\dev\passconside\desktop
+.\scripts\setup-vscode.ps1          # once
+.\scripts\build-pass-ai-agent.ps1
+.\scripts\build-windows.ps1 -Launch   # dev copy: desktop\VSCode-win32-x64\PASS AI.exe
+```
+
+Use that **`PASS AI.exe`** in the repo folder to verify changes without touching the installed copy.
+
+### Ship changes to teammates (new `.exe` on Releases)
+
+After your changes work locally:
+
+```powershell
+cd C:\dev\passconside\desktop
+.\scripts\package-pass-ai-release.ps1 -Version "0.1.1"
+```
+
+Upload `desktop\out\releases\PASS-AI-Setup-0.1.1.exe` to [GitHub Releases](https://github.com/maramfarhat/passconside/releases). Teammates run the new installer (they can install over the old version).
+
+### Git workflow (short)
+
+```powershell
+cd C:\dev\passconside
+git checkout -b my-feature
+# edit, test with steps above
+git add .
+git commit -m "Describe your change"
+git push -u origin my-feature
+```
+
+Open a Pull Request on GitHub for review.
+
+---
+
 ## Phase 2 — Clone, change code, rebuild
 
 For teammates who **modify** the project (agent, branding, desktop shell, API).
